@@ -71,59 +71,15 @@
     </details>
 
     <footer>
-      <div>Hazır örnek veriler: İstanbul Market, Anatolia Döner, Türkiye Başkonsolosluğu (iletişim). Kaynaklar: Instagram, TripAdvisor, resmi konsolosluk sayfaları.</div>
-      <div style="margin-top:6px">Bu siteyi GitHub Pages'te yayınlamak için: yeni bir repo oluşturun <code>username.github.io</code> ve bu dosyayı <code>index.html</code> olarak yükleyin.</div>
+      <div>Hazır örnek veriler <code>data.json</code> dosyasından yükleniyor. Kaynaklar: Instagram, TripAdvisor, resmi konsolosluk sayfaları.</div>
+      <div style="margin-top:6px">Bu siteyi GitHub Pages'te yayınlamak için: yeni bir repo oluşturun <code>username.github.io</code> ve bu dosyayı <code>index.html</code>, veri dosyasını ise <code>data.json</code> olarak yükleyin.</div>
     </footer>
   </div>
 
   <script>
-    // Örnek veri - daha fazlasını ekleyebilirsiniz
-    const items = [
-      {
-        id:1,
-        type:'market',
-        name:'Istanbul Market',
-        address:'Carrer de Sardenya 98, 08018 Barcelona',
-        phone:'+34 93 000 0000',
-        desc:'Türk ürünleri, bakliyat, baharat, çay ve tatlılar. Uzun çalışma saatleri.',
-        rating:4.5,
-        source:'https://www.instagram.com/bcn.istanbulmarket/'
-      },
-      {
-        id:2,
-        type:'restaurant',
-        name:'Anatolia Döner Kebap Grill',
-        address:'La Rambla 40, 08002 Barcelona',
-        phone:'+34 93 000 1111',
-        desc:'Döner ve kebap çeşitleri. Turistik bölge yakınında, hızlı servis.',
-        rating:4.0,
-        source:'https://www.tripadvisor.com.tr/'
-      },
-      {
-        id:3,
-        type:'service',
-        name:'Türkiye Başkonsolosluğu - Barcelona',
-        address:'Passeig de Gracia, 7, 1ª, 08007 Barcelona',
-        phone:'+34 93 317 92 31',
-        desc:'Konsolosluk hizmetleri, nüfus, pasaport ve noter işleri.',
-        rating:4.2,
-        source:'https://barcelona.cg.mfa.gov.tr'
-      },
-      {
-        id:4,
-        type:'market',
-        name:'Migros Market (Türk ürünleri bölümü)',
-        address:'Carrer de Roger de Flor 289, 08025 Barcelona',
-        phone:'+34 632 44 88 87',
-        desc:'Çeşitli uluslararası ve Türk ürünleri bulunuyor.',
-        rating:4.0,
-        source:'https://www.instagram.com/migros_market_bcn/'
-      }
-    ];
-
     // localStorage'dan alınan geçici eklemeler
     const saved = JSON.parse(localStorage.getItem('bcn_tr_items')||'[]');
-    const data = items.concat(saved);
+    let data = [];
 
     const listEl = document.getElementById('list');
     const qEl = document.getElementById('q');
@@ -178,8 +134,18 @@
       alert('Giriş eklendi (sadece bu tarayıcıda saklanır). Gerçek kayıt için GitHub repo verisini güncelleyin.');
     })
 
-    // İlk render
-    filterAndRender();
+    // JSON'dan veri yükle
+    fetch('data.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json.concat(saved);
+        filterAndRender();
+      })
+      .catch(err => {
+        console.error('data.json yüklenemedi', err);
+        data = saved;
+        filterAndRender();
+      });
 
     // Basit export - JSON indir
     function downloadJSON(){

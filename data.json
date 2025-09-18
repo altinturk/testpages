@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "type": "market",
+    "name": "Istanbul Market",
+    "address": "Carrer de Sardenya 98, 08018 Barcelona",
+    "phone": "+34 93 000 0000",
+    "desc": "Türk ürünleri, bakliyat, baharat, çay ve tatlılar. Uzun çalışma saatleri.",
+    "rating": 4.5,
+    "source": "https://www.instagram.com/bcn.istanbulmarket/"
+  },
+  {
+    "id": 2,
+    "type": "restaurant",
+    "name": "Anatolia Döner Kebap Grill",
+    "address": "La Rambla 40, 08002 Barcelona",
+    "phone": "+34 93 000 1111",
+    "desc": "Döner ve kebap çeşitleri. Turistik bölge yakınında, hızlı servis.",
+    "rating": 4.0,
+    "source": "https://www.tripadvisor.com.tr/"
+  },
+  {
+    "id": 3,
+    "type": "service",
+    "name": "Türkiye Başkonsolosluğu - Barcelona",
+    "address": "Passeig de Gracia, 7, 1ª, 08007 Barcelona",
+    "phone": "+34 93 317 92 31",
+    "desc": "Konsolosluk hizmetleri, nüfus, pasaport ve noter işleri.",
+    "rating": 4.2,
+    "source": "https://barcelona.cg.mfa.gov.tr"
+  },
+  {
+    "id": 4,
+    "type": "market",
+    "name": "Migros Market (Türk ürünleri bölümü)",
+    "address": "Carrer de Roger de Flor 289, 08025 Barcelona",
+    "phone": "+34 632 44 88 87",
+    "desc": "Çeşitli uluslararası ve Türk ürünleri bulunuyor.",
+    "rating": 4.0,
+    "source": "https://www.instagram.com/migros_market_bcn/"
+  }
+]
