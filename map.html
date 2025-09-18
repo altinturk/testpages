@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Barselona Türk Rehberi - Harita</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.5/dist/leaflet.css" crossorigin=""/>
+<style>
+  body, html {margin:0;padding:0;height:100%;font-family:Arial,sans-serif;}
+  #map {height:calc(100% - 60px);}
+  .controls {height:60px;padding:8px;background:#0b1220;color:#e6eef8;display:flex;align-items:center;gap:8px;}
+  select{padding:6px;border-radius:6px;border:none;background:#1f1f2d;color:white;}
+</style>
+</head>
+<body>
+<div class="controls">
+  <label for="categoryFilter">Kategori:</label>
+  <select id="categoryFilter">
+    <option value="all">Tümü</option>
+    <option value="market">Market</option>
+    <option value="restaurant">Restoran</option>
+    <option value="service">Servis</option>
+  </select>
+</div>
+<div id="map"></div>
+
+<!-- Leaflet JS script should be loaded before using L -->
+<script src="https://unpkg.com/leaflet@1.9.5/dist/leaflet.js" crossorigin=""></script>
+<script>
+// Ensure script runs after Leaflet is loaded
+window.addEventListener('load', async () => {
+  let map = L.map('map').setView([41.3851, 2.1734], 13); // Barcelona koordinatları varsayılan
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  let markers = [];
+  const saved = JSON.parse(localStorage.getItem('bcn_tr_items')||'[]');
+
+  function escapeHtml(s){ if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+  function addMarker(lat, lon, item){
+    const marker = L.marker([lat, lon]).addTo(map);
+    marker.bindPopup(`<b>${escapeHtml(item.name)}</b><br>${escapeHtml(item.type)}<br>${escapeHtml(item.address||'Adres yok')}`);
+    marker.itemType = item.type;
+    markers.push(marker);
+  }
+
+  function filterMarkers(category){
+    markers.forEach(m=>{
+      if(category==='all'||m.itemType===category){
+        m.addTo(map);
+      } else {
+        map.removeLayer(m);
+      }
+    });
+  }
+
+  async function geocodeAddress(address){
+    if(!address) return [41.3851, 2.1734];
+    try{
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const data = await res.json();
+      if(data && data[0]){
+        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+      }
+    }catch(e){console.warn('Geocode hatası', e)}
+    return [41.3851, 2.1734];
+  }
+
+  async function loadData(){
+    try{
+      const res = await fetch('data.json');
+      const items = (await res.json()).concat(saved);
+      for(const item of items){
+        const [lat, lon] = await geocodeAddress(item.address);
+        addMarker(lat, lon, item);
+      }
+    }catch(e){console.error('data.json yüklenemedi', e);}
+  }
+
+  document.getElementById('categoryFilter').addEventListener('change', e=>{
+    filterMarkers(e.target.value);
+  });
+
+  await loadData();
+});
+</script>
+</body>
+</html>
